@@ -124,27 +124,41 @@ app.frame('/', (c) => {
 app.transaction('/allocate', (c) => {
   // Contract transaction response.
   // https://explorer.gitcoin.co/#/round/10/5/3
+
   const chainId = 10; //OP
   const roundId = '5' ; //Mission 1 OP
   const projectId = 5; //Ethereal Resonance
   const mrcAddress = MRC_CONTRACTS[chainId];
-  const { inputText } = c
+  console.log("mrcAddress:", mrcAddress);
+  const { inputText } = c;
 
-  const isV2 = getConfig().allo.version === "allo-v2";
+  //working on retriving this data without the cart
+  const grantApplicationId = '';
+  const projectRegistryId = '';
+  const anchorAddress = '';
+  const recipient = '';
+  const projectMetadata = '' as ProjectMetadata;
+  const grantApplicationFormAnswers = [''] as GrantApplicationFormAnswer;
+  const applicationStatus = '' as ApplicationStatus;
+  const applicationIndex = 10;
 
+  //const isV2 = getConfig().allo.version === "allo-v2";
+  console.log("constants done");
   const project = {
-    // grantApplicationId: '',
-    // projectRegistryId: 'string',
-    // anchorAddress: 'string',
-    // recipient: 'string',
-    // projectMetadata: ProjectMetadata,
-    // grantApplicationFormAnswers: GrantApplicationFormAnswer[],
-    // status: ApplicationStatus,
-    // applicationIndex: number,
+    grantApplicationId: grantApplicationId,
+    projectRegistryId: projectRegistryId,
+    anchorAddress: anchorAddress,
+    recipient: recipient,
+    projectMetadata: projectMetadata,
+    grantApplicationFormAnswers: grantApplicationFormAnswers,
+    status: applicationStatus,
+    applicationIndex: applicationIndex,
     roundId: roundId,
     chainId: chainId,
     amount: inputText,
   } as CartProject;
+
+  console.log('project:', project)
 
   // export type Project = {
   //   grantApplicationId: string;
@@ -164,12 +178,17 @@ app.transaction('/allocate', (c) => {
   // };
   
   const projectsByChain: { [chain: number]: CartProject[] } = { [chainId]: [project] };
+  console.log('projectsByChain', projectsByChain)
+  
   const donations = projectsByChain[chainId];
+  console.log('donations', donations);
 
   const getVotingTokenForChain =
     useCartStorage.getState().getVotingTokenForChain;
   
+  console.log('getVotingTokenForChain', getVotingTokenForChain);
   const token = getVotingTokenForChain(chainId);
+  console.log('token', token);
 
   const groupedDonations = groupBy(
     donations.map((d) => ({
@@ -177,14 +196,14 @@ app.transaction('/allocate', (c) => {
       roundId: d.roundId,
     })),
     "roundId"
-  ); 
+  );
+  console.log('groupedDonations', groupedDonations)
 
   const groupedEncodedVotes: Record<string, Hex[]> = {};
   {
-    groupedEncodedVotes[roundId] = isV2
-      ? encodedQFAllocation(token, groupedDonations[roundId])
-      : encodeQFVotes(token, groupedDonations[roundId]);
+    groupedEncodedVotes[roundId] = encodedQFAllocation(token, groupedDonations[roundId])
   }
+  console.log('groupedEncodedVotes', groupedEncodedVotes);
 
   const data = Object.values(groupedEncodedVotes).flat();
   console.log(data);
