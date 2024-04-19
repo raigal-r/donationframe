@@ -1,3 +1,4 @@
+"use client"
 
 /** @jsxImportSource frog/jsx */
 
@@ -18,7 +19,11 @@ import { groupBy, uniq } from "lodash-es";
 import { getConfig } from '../../lib/config';
 import { useCartStorage } from "../../lib/store";
 import { CartProject } from "../../common/types";
-import { number } from 'zod'
+import { number } from 'zod';
+import { describe, expect, test, vi } from "vitest";
+// import { DataLayer } from "../../data-layer/src/data-layer";
+
+
 
 const app = new Frog({
   assetsPath: '/',
@@ -132,33 +137,59 @@ app.transaction('/allocate', (c) => {
   console.log("mrcAddress:", mrcAddress);
   const { inputText } = c;
 
+    //quiero hacer fetch con url 
+  // const fetchMock = vi.fn().mockResolvedValue({
+  //   status: 200,
+  //   headers: new Headers({ "content-type": "application/json" }),
+  //   json: async () => ({
+  //     project: mockProject,
+  //   }),
+  // });
+  console.log('before fetch');
+
+  // const dataLayer = new DataLayer({
+  //   //fetch: fetch,
+  //   //baseUrl is the one from the 
+  //   search: { baseUrl: "https://explorer.gitcoin.co/#/round/10/4/0" },
+  //   subgraph: { endpointsByChainId: {} },
+  //   indexer: { baseUrl: "https://indexer-staging.fly.dev/graphql" },
+  // });
+  // console.log('dataLayer:',dataLayer)
+
+  // const project = dataLayer.getProjectById({
+  //   projectId:
+  //     "0x8a79249b63395c25bd121ba6ff280198c399d4fb3f951fc3c42197b54a6db6a6",
+  //   alloVersion: "allo-v2",
+  // }) ;
+  // console.log('project:', project)
+
   //working on retriving this data without the cart
-  const grantApplicationId = '';
-  const projectRegistryId = '';
-  const anchorAddress = '';
-  const recipient = '';
-  const projectMetadata = '' as ProjectMetadata;
-  const grantApplicationFormAnswers = [''] as GrantApplicationFormAnswer;
-  const applicationStatus = '' as ApplicationStatus;
-  const applicationIndex = 10;
+  // const grantApplicationId = '';
+  // const projectRegistryId = '';
+  // const anchorAddress = '';
+  // const recipient = '';
+  // const projectMetadata = '' as ProjectMetadata;
+  // const grantApplicationFormAnswers = [''] as GrantApplicationFormAnswer;
+  // const applicationStatus = '' as ApplicationStatus;
+  // const applicationIndex = 10;
 
   //const isV2 = getConfig().allo.version === "allo-v2";
   console.log("constants done");
-  const project = {
-    grantApplicationId: grantApplicationId,
-    projectRegistryId: projectRegistryId,
-    anchorAddress: anchorAddress,
-    recipient: recipient,
-    projectMetadata: projectMetadata,
-    grantApplicationFormAnswers: grantApplicationFormAnswers,
-    status: applicationStatus,
-    applicationIndex: applicationIndex,
-    roundId: roundId,
-    chainId: chainId,
-    amount: inputText,
-  } as CartProject;
+  // const project = {
+  //   grantApplicationId: grantApplicationId,
+  //   projectRegistryId: projectRegistryId,
+  //   anchorAddress: anchorAddress,
+  //   recipient: recipient,
+  //   projectMetadata: projectMetadata,
+  //   grantApplicationFormAnswers: grantApplicationFormAnswers,
+  //   status: applicationStatus,
+  //   applicationIndex: applicationIndex,
+  //   roundId: roundId,
+  //   chainId: chainId,
+  //   amount: inputText,
+  // } as CartProject;
 
-  console.log('project:', project)
+  // console.log('project:', project)
 
   // export type Project = {
   //   grantApplicationId: string;
@@ -176,44 +207,53 @@ app.transaction('/allocate', (c) => {
   //   chainId: ChainId;
   //   amount: string;
   // };
+
   
-  const projectsByChain: { [chain: number]: CartProject[] } = { [chainId]: [project] };
-  console.log('projectsByChain', projectsByChain)
+  // const projectsByChain: { [chain: number]: CartProject[] } = { [chainId]: [project] };
+  // console.log('projectsByChain', projectsByChain)
   
-  const donations = projectsByChain[chainId];
-  console.log('donations', donations);
+  // const donations = projectsByChain[chainId];
+  // console.log('donations', donations);
 
-  const getVotingTokenForChain =
-    useCartStorage.getState().getVotingTokenForChain;
+  // const getVotingTokenForChain =
+  //   useCartStorage.getState().getVotingTokenForChain;
   
-  console.log('getVotingTokenForChain', getVotingTokenForChain);
-  const token = getVotingTokenForChain(chainId);
-  console.log('token', token);
+  // console.log('getVotingTokenForChain', getVotingTokenForChain);
+  // const token = getVotingTokenForChain(chainId);
+  // console.log('token', token);
 
-  const groupedDonations = groupBy(
-    donations.map((d) => ({
-      ...d,
-      roundId: d.roundId,
-    })),
-    "roundId"
-  );
-  console.log('groupedDonations', groupedDonations)
+  // const groupedDonations = groupBy(
+  //   donations.map((d) => ({
+  //     ...d,
+  //     roundId: d.roundId,
+  //   })),
+  //   "roundId"
+  // );
+  // console.log('groupedDonations', groupedDonations)
 
-  const groupedEncodedVotes: Record<string, Hex[]> = {};
-  {
-    groupedEncodedVotes[roundId] = encodedQFAllocation(token, groupedDonations[roundId])
-  }
-  console.log('groupedEncodedVotes', groupedEncodedVotes);
 
-  const data = Object.values(groupedEncodedVotes).flat();
-  console.log(data);
+  // const groupedEncodedVotes: Record<string, Hex[]> = {};
+  // {
+  //     //QF allocation requires anchor address
+  //     // encodedQFAllocation(
+  //       //donationToken: VotingToken, 
+  //       //donations: 
+  //         //Pick<CartProject, "amount" | "recipient" | "projectRegistryId" | "applicationIndex" | "anchorAddress">)
+      
+  //     //groupedDonations
+  //   groupedEncodedVotes[roundId] = encodedQFAllocation(token, groupedDonations[roundId])
+  // }
+  // console.log('groupedEncodedVotes', groupedEncodedVotes);
+
+  // const data = Object.values(groupedEncodedVotes).flat();
+  // console.log(data);
 
   return c.contract({
     to: mrcAddress,
     abi: MRC_ABI,
     functionName: 'allocate',
     chainId: `eip155:${chainId}`,
-    args: [ BigInt(roundId), BigInt(inputText || ''), data],
+    args: [ BigInt(roundId), BigInt(inputText || ''), [`0x${'string'}`]],
     value: parseEther(inputText || '')
   })
 })
